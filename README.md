@@ -1,4 +1,4 @@
-Bitcoin Ticker
+##Bitcoin Ticker
 //////////////
 
 Verwendete Komponenten

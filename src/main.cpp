@@ -45,12 +45,6 @@ unsigned long interval_zeit = 10000;
 // Define NTP Client to get time
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org");
-//Week Days
-String weekDays[7]={"Sonntag", "Montag", "Dienstag", "Wednesday", "Thursday", "Friday", "Saturday"};
-
-//Month names
-String months[12]={"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-
       
 String BTC_old_kurs ="0";      
 
