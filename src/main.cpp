@@ -35,10 +35,10 @@ Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
 /////////////////////////////////////////////////////////////////////////// Intervall der Steuerung
 unsigned long previousMillis_btckurs = 0;
-unsigned long interval_btckurs = 100000; 
+unsigned long interval_btckurs = 25000; 
 
 unsigned long previousMillis_zeit = 0;
-unsigned long interval_zeit = 10000; 
+unsigned long interval_zeit = 3500; 
 
 
 /////////////////////////////////////////////////////////////////////////// ntp
@@ -51,6 +51,7 @@ String BTC_old_kurs ="0";
 std::unique_ptr<BearSSL::WiFiClientSecure>client(new BearSSL::WiFiClientSecure);
 
  float coin;
+
 
 /////////////////////////////////////////////////////////////////////////// Funktionsprototypen
 //void callback                (char*, byte*, unsigned int);
@@ -68,6 +69,14 @@ void setup() {
 
   // Serielle Kommunikation starten
   Serial.begin(115200);
+
+
+  /////////////////////////////////////////////////////////////////////////// TFT initialisieren
+  tft.initR(INITR_BLACKTAB);      // Init ST7735S chip, black tab
+  
+  // TFT einfärben
+  tft.fillScreen(BLACK); 
+
 
   // Verbindung zum WiFI aufbauen
 
@@ -89,14 +98,20 @@ void setup() {
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(200);
-    Serial.print(".");
+   
+   tft.setCursor(5,40);
+   tft.setTextColor(RED,BLACK);
+   tft.setTextSize(2);
+   tft.print("Suche Wlan");
+  
   }
   Serial.println("");
   Serial.println("Erfolgreich mit dem WiFi verbunden!");
-  Serial.print("IP 24 Relaiskarte : ");
   Serial.println(WiFi.localIP());
   Serial.print("SSID : ");
   Serial.println(ssid);
+
+  tft.fillScreen(BLACK); 
 
   /////////////////////////////////////////////////////////////////////////// Initialize a NTPClient to get time
   timeClient.begin();
@@ -107,11 +122,7 @@ void setup() {
   // GMT 0 = 0
   timeClient.setTimeOffset(7200);
 
-  /////////////////////////////////////////////////////////////////////////// TFT initialisieren
-  tft.initR(INITR_BLACKTAB);      // Init ST7735S chip, black tab
-  
-  // TFT einfärben
-  tft.fillScreen(BLACK);
+
   // Set starting text size to 1 for connecting message
   //tft_text(15,15,2,"BTC START",BITCOIN);
   delay(200);
@@ -123,7 +134,7 @@ void setup() {
    delay(1000);
    tft.fillRect(1, 80, 128, 19, BLACK);
 
-   tft.setCursor(19,151);
+   tft.setCursor(20,151);
    tft.setTextColor(YELLOW,BLACK);
    tft.setTextSize(1);
    tft.print("by zurzy.shop");
@@ -176,7 +187,7 @@ void btc_kurs(){
       if (BTC_old_kurs < BTC_USD) {
 
       tft.drawBitmap(0, 0, bitcoinLogo, 128, 64, GREEN);
-      tft.setCursor(24,80);
+      tft.setCursor(24,78);
       tft.setTextColor(GREEN,BLACK);
       tft.setTextSize(2);
       tft.print("$"+BTC_USD.substring(0, 5));
@@ -185,7 +196,7 @@ void btc_kurs(){
       else
       {
       tft.drawBitmap(0, 0, bitcoinLogo, 128, 64, RED);
-      tft.setCursor(24,80);
+      tft.setCursor(24,78);
       tft.setTextColor(RED,BLACK);
       tft.setTextSize(2);
       tft.print("$"+BTC_USD.substring(0, 5));
@@ -195,11 +206,11 @@ void btc_kurs(){
 
       }
     } else {
-      Serial.println("WERT 1");
+
     }
 
   } else {
-     Serial.println("WERT 2");
+
   }
 
 }
